@@ -20,10 +20,10 @@ from credits import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/credits/packages/', views.CreditPackageList.as_view(), name='list_credit_packages'), 
-    path('api/credits/purchase/', views.PurchaseCreditPackage.as_view(), name='check_credit_balance'), 
-    path('api/credits/balance/', views.PracticeBalance.as_view(), name='practice_balance'), 
-    path('api/credits/transactions/', views.PracticeTransactionList.as_view(), name='practice_transactions_list'), 
+    path('api/credits/packages/', views.credit_package_List, name='list_credit_packages'), 
+    path('api/credits/purchase/', views.purchase_credits, name='purchase_credits'), 
+    path('api/credits/balance/', views.credit_balance, name='practice_balance'), 
+    path('api/credits/transactions/', views.transaction_history, name='practice_transactions_list'), 
     #path('api/credits/transactions/useSMS', views..as_view(), name=''), 
     #path('api/credits/transactions/useVoice', views..as_view(), name=''), 
 ]

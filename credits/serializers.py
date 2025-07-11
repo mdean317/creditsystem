@@ -6,6 +6,10 @@ class CreditPackageSerializer(serializers.ModelSerializer):
         model = CreditPackage 
         fields = "__all__"
 
+'''  
+At first I created serializers using django's built in restful capabilities, before diving more
+into Django's async capabilities
+
 class PracticeSerializer(serializers.ModelSerializer): 
     class Meta:
         model = PracticeCredit
@@ -20,3 +24,4 @@ class CreditTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CreditTransaction 
         fields = "__all__"
+'''

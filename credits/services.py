@@ -1,7 +1,7 @@
 
 from .models import CreditPackage,  Practice, CreditTransaction
 
-
+SEGMENT_LENGTH = 153
 def sendSMS(practice_id, number_of_recipients, recipients, message, date):
 
 
@@ -39,10 +39,5 @@ def buyVCs(practice_id, number_of_recipients, recipients, duration, call, date):
         #Do something
          threshhold = 0
 
-def calcCreditsForSMS():
-    print('tbd')
 
-
-def calcCreditsForVC():
-    print('tbd')
 

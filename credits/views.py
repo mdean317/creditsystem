@@ -1,36 +1,56 @@
 from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from datetime import datetime
 from django.db.models import F
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import timezone
-from .serializers import CreditPackageSerializer, PracticeSerializer, CreditTransactionSerializer, PracticeBalanceSerializer
-from .models import CreditPackage, Practice, CreditTransaction, PracticeCredit
+from .serializers import CreditPackageSerializer
+from .models import CreditPackage, Practice, CreditTransaction, PracticeCredit, TRANSACTION_TYPES, TYPE_PURCHASE
 from .exceptions import CreditCardError
 import json
 import random
-from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
 from urllib.parse import urlencode
+from django.views.decorators.csrf import csrf_exempt
+from django.db import transaction
+from asgiref.sync import sync_to_async
 
 
 '''Use async def methods (e.g., async def get(self, request)) inside your API views. '''
 '''Use Django’s asynchronous ORM methods (aget, acreate, aupdate, adelete, etc.) instead of their synchronous counterparts.'''
 
-class CreditPackageList(generics.ListAPIView):
-    serializer_class = CreditPackageSerializer 
+async def credit_package_List(request):
+    """View for listing all packages"""
+    
+    # This path only responds to POST requests
+    if request.method == "GET":
 
-    async def get_queryset(self):
-        return CreditPackage.objects.all().order_by('name')
+        # Get the queryset of packages to display
+        queryset = CreditPackage.objects.all().order_by("id").aiterator()
 
+        packages=[]
+
+        async for package in queryset:
+            packages.append({
+                    "id": package.id,
+                    "name": package.name,
+                    "credit_amount": package.credit_amount,
+                    "price_cents": package.price_cents,
+                    "is_active": package.is_active,
+                    "description": package.updated_at,
+
+            })
+
+        return JsonResponse({
+            "packages": packages,
+        })
+
+
+'''CSRF used just for testing!!'''
+@csrf_exempt 
 async def purchase_credits(request):
     """View for buying more credits(POST)"""
 
     # This path only responds to POST requests
     if request.method == "POST":
-
 
         try:
 
@@ -46,55 +66,68 @@ async def purchase_credits(request):
             if package is None:
                 return JsonResponse({"error": "Invalid package ID"}, status=404)
 
-            '''Mock Payment Processing'''
-            rand_int = random.randint(1, 5)
+            def get_transaction_data(package, payment_type, last_four):
+                '''Mock Payment Processing'''
+                rand_int = random.randint(1, 5)
 
-            async with transaction.atomic():
                 if rand_int == 5:
                     '''Payment failed'''
 
-                    status = "fail"
+                    status = 'fail' 
                     # Craft information string
                     info = f"Purchase attempt of {package.name} on {timezone.now()} using {payment_type}"
                     if payment_type == "credit_card":
                                 info += f" ending with {last_four} "
                     info += " failed."
+                    credits_to_add = 0
                     
-                    credits_added = 0
-                
                 else:
                     '''Payment succeeded'''
 
-                    status = "success"
+                    status = 'success'
                     # Craft information string
                     info = f"Purchase of {package.name} on {timezone.now()} using {payment_type}"
                     if payment_type == "credit_card":
                                 info += f" ending with {last_four}"
                     info += " succeeded."
+                    credits_to_add = package.credit_amount
 
-                    credits_added = package.credit_amount
-                    await PracticeCredit.objects.filter(id=practice_id).aupdate(balance=F('balance') + package.credit_amount)
-                  
-                new_balance = await PracticeCredit.objects.filter(id=practice_id).values_list("balance", flat=True).afirst()
-                
-                 # Create successfull transaction record
-                transaction = CreditTransaction(
-                    practice=practice_id,
-                    amount=credits_added,
-                    transaction_type="PURCHASE",
-                    metadata= {"status": status, "type":"Purchase", 
-                                "additional information": info}
-                    )
+                return(status, credits_to_add, info)
 
-                await transaction.asave()  
+            # Get needed transaction data, basedon success fail. 
+            status, credits_to_add, info = get_transaction_data(package, payment_type, last_four)
+            metadata = {"status": status, "type":TRANSACTION_TYPES[TYPE_PURCHASE], "additional information": info}
+            
+            @sync_to_async(thread_sensitive=True)
+            def perform_async_atomic_transaction(practice_id, credits_to_add, package, metadata):
+                with transaction.atomic():
+                    
+                    practice = Practice.objects.filter(id=practice_id).first()
+        
+                    PracticeCredit.objects.filter(practice=practice).update(balance=F('balance') + credits_to_add)
+                    new_balance = PracticeCredit.objects.filter(practice=practice).values_list("balance", flat=True).first()
+                    
+                    # Create transaction record
+                    credit_transaction = CreditTransaction(
+                        practice=practice,
+                        amount=credits_to_add,
+                        transaction_type=TYPE_PURCHASE,
+                        package=package,
+                        metadata=metadata
+                        )
 
-                return JsonResponse({
-                        "transaction_id": transaction.reference_id,
-                        "status": status ,
-                        "credits_added": credits_added,
-                        "new_balance": new_balance,
-                        "receipt_url": "/api/credits/receipts/{transaction.reference_id}/"
-                        })
+                    credit_transaction.save()  
+                    return(credit_transaction.id, new_balance, credit_transaction.reference_id)
+
+            transaction_id, new_balance, reference_id  = await perform_async_atomic_transaction(practice_id, credits_to_add, package, metadata)
+
+            return JsonResponse({
+                    "transaction_id": transaction_id,
+                    "status": status ,
+                    "credits_added": credits_to_add,
+                    "new_balance": new_balance,
+                    "receipt_url": f"/api/credits/receipts/{reference_id}/"
+                    })
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON"}, status=400)
@@ -103,16 +136,21 @@ async def credit_balance(request):
     """View for checking a practice's credit balance"""
 
     # Get practice id from url 
-    practice_id = int(request.GET.get('practice_id'))
-    
-    # If couldn't get paramter, respond with the error
-    if not practice_id:
+    str_practice_id = request.GET.get('practice_id')
+
+    if not str_practice_id:
         return JsonResponse({"error": "practice_id is required"}, status=400)
+
+    try:
+        practice_id = int(str_practice_id)
+
+    except ValueError:
+        return JsonResponse({"error": "practice_id must be an integer"}, status=400)
     
     try:
-
+   
         # Get credit info by practice id
-        practice_credit = await PracticeCredit.objects.aget(practice_id=practice_id)
+        practice_credit = await PracticeCredit.objects.aget(practice__id=practice_id)
         
         # Calculate estimated remaining communications
         '''These should be seprate functions'''
