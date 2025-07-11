@@ -1,6 +1,7 @@
 asgiref==3.9.1
 Django==5.2.4
 djangorestframework==3.16.0
+dj-database-url>=1.0.0
 psycopg==3.2.9
 psycopg-binary==3.2.9
 psycopg-pool==3.2.6
