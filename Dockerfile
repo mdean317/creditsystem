@@ -17,7 +17,7 @@ COPY . .
 
 # copy entrypoint explicitly, give it the needed permissions
 COPY entrypoint.sh /app/entrypoint.sh
-RUN chmod 755 /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # default command
