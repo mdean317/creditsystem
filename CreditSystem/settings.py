@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'CreditSystem.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-print("DATABASE_URL:", os.environ.get("DATABASE_URL"))
+
 DATABASES = {
     'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
 }
