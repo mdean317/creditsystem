@@ -1,0 +1,818 @@
+[
+{
+  "model": "credits.practice",
+  "pk": 4,
+  "fields": {
+    "name": "Lend Me Your Ears",
+    "address": "7 HaKishon Street, Saugerties, NY 11111",
+    "created_at": "2025-07-10T20:40:29.930Z"
+  }
+},
+{
+  "model": "credits.practice",
+  "pk": 5,
+  "fields": {
+    "name": "Corn Ear",
+    "address": "73 5th Ave, New York, NY 10043",
+    "created_at": "2025-07-10T20:41:07.213Z"
+  }
+},
+{
+  "model": "credits.practice",
+  "pk": 6,
+  "fields": {
+    "name": "Earuka",
+    "address": "Here",
+    "created_at": "2025-07-12T03:29:29.717Z"
+  }
+},
+{
+  "model": "credits.practice",
+  "pk": 7,
+  "fields": {
+    "name": "Fear No Ear",
+    "address": "There",
+    "created_at": "2025-07-12T03:29:38.921Z"
+  }
+},
+{
+  "model": "credits.practice",
+  "pk": 8,
+  "fields": {
+    "name": "Test Practice",
+    "address": "Maine",
+    "created_at": "2025-07-12T05:06:31.707Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 1,
+  "fields": {
+    "name": "Solo - VC",
+    "credit_amount": 155000,
+    "price_cents": 1550,
+    "is_active": true,
+    "description": "VC package for solo practices",
+    "is_package_pay_as_you_go": false,
+    "credit_per_SMS": null,
+    "credit_per_VC": 155.0,
+    "created_at": "2025-07-10T20:42:37.066Z",
+    "updated_at": "2025-07-12T03:26:55.536Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 2,
+  "fields": {
+    "name": "Solo - SMS",
+    "credit_amount": 83000,
+    "price_cents": 830,
+    "is_active": true,
+    "description": "SMS package for solo practices",
+    "is_package_pay_as_you_go": false,
+    "credit_per_SMS": 83.0,
+    "credit_per_VC": null,
+    "created_at": "2025-07-11T13:23:41.906Z",
+    "updated_at": "2025-07-12T03:26:52.605Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 5,
+  "fields": {
+    "name": "Small - SMS",
+    "credit_amount": 283500,
+    "price_cents": 2835,
+    "is_active": true,
+    "description": "SMS package for small practices",
+    "is_package_pay_as_you_go": false,
+    "credit_per_SMS": 81.0,
+    "credit_per_VC": null,
+    "created_at": "2025-07-12T03:24:23.981Z",
+    "updated_at": "2025-07-12T03:26:50.054Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 6,
+  "fields": {
+    "name": "Medium - SMS",
+    "credit_amount": 592500,
+    "price_cents": 5925,
+    "is_active": true,
+    "description": "SMS package for medium practices",
+    "is_package_pay_as_you_go": false,
+    "credit_per_SMS": 79.0,
+    "credit_per_VC": null,
+    "created_at": "2025-07-12T03:25:41.399Z",
+    "updated_at": "2025-07-12T03:26:47.235Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 7,
+  "fields": {
+    "name": "Small - VC",
+    "credit_amount": 841500,
+    "price_cents": 8415,
+    "is_active": true,
+    "description": "VC package for small practices",
+    "is_package_pay_as_you_go": false,
+    "credit_per_SMS": null,
+    "credit_per_VC": 153.0,
+    "created_at": "2025-07-12T03:26:38.307Z",
+    "updated_at": "2025-07-12T03:26:38.307Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 8,
+  "fields": {
+    "name": "Medium - VC",
+    "credit_amount": 1800000,
+    "price_cents": 18000,
+    "is_active": true,
+    "description": "VC package for medium clinics",
+    "is_package_pay_as_you_go": false,
+    "credit_per_SMS": null,
+    "credit_per_VC": 150.0,
+    "created_at": "2025-07-12T03:27:35.853Z",
+    "updated_at": "2025-07-12T03:28:24.585Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 9,
+  "fields": {
+    "name": "SMS - Pay As You Go",
+    "credit_amount": 150000,
+    "price_cents": 1500,
+    "is_active": true,
+    "description": "SMS - Pay As You Go - add 150000 credits",
+    "is_package_pay_as_you_go": true,
+    "credit_per_SMS": null,
+    "credit_per_VC": null,
+    "created_at": "2025-07-12T03:51:27.980Z",
+    "updated_at": "2025-07-12T03:56:25.802Z"
+  }
+},
+{
+  "model": "credits.creditpackage",
+  "pk": 10,
+  "fields": {
+    "name": "VC - Pay As You Go",
+    "credit_amount": 150000,
+    "price_cents": 1500,
+    "is_active": true,
+    "description": "SMS - Pay As You Go - add 150000 credits",
+    "is_package_pay_as_you_go": true,
+    "credit_per_SMS": null,
+    "credit_per_VC": null,
+    "created_at": "2025-07-12T03:56:12.911Z",
+    "updated_at": "2025-07-12T03:56:12.911Z"
+  }
+},
+{
+  "model": "credits.practicecredit",
+  "pk": 4,
+  "fields": {
+    "balance": 750075,
+    "current_package": 5,
+    "pay_as_you_go_SMS_count": 0,
+    "pay_as_you_go_VC_count": 0,
+    "last_updated": "2025-07-12T04:12:06.961Z",
+    "preferred_customer": true
+  }
+},
+{
+  "model": "credits.practicecredit",
+  "pk": 5,
+  "fields": {
+    "balance": 2250500,
+    "current_package": 9,
+    "pay_as_you_go_SMS_count": 0,
+    "pay_as_you_go_VC_count": 0,
+    "last_updated": "2025-07-12T04:12:04.315Z",
+    "preferred_customer": false
+  }
+},
+{
+  "model": "credits.practicecredit",
+  "pk": 6,
+  "fields": {
+    "balance": 0,
+    "current_package": 8,
+    "pay_as_you_go_SMS_count": 1500,
+    "pay_as_you_go_VC_count": 15000,
+    "last_updated": "2025-07-12T05:05:57.376Z",
+    "preferred_customer": false
+  }
+},
+{
+  "model": "credits.practicecredit",
+  "pk": 7,
+  "fields": {
+    "balance": 3500,
+    "current_package": 10,
+    "pay_as_you_go_SMS_count": 0,
+    "pay_as_you_go_VC_count": 0,
+    "last_updated": "2025-07-12T04:11:56.997Z",
+    "preferred_customer": false
+  }
+},
+{
+  "model": "credits.practicecredit",
+  "pk": 8,
+  "fields": {
+    "balance": 0,
+    "current_package": 5,
+    "pay_as_you_go_SMS_count": 0,
+    "pay_as_you_go_VC_count": 0,
+    "last_updated": "2025-07-12T05:06:53.819Z",
+    "preferred_customer": false
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 1,
+  "fields": {
+    "practice": 4,
+    "amount": 20000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-10T21:06:06.050Z",
+    "reference_id": "cef1c989-6468-4ad9-b707-752faee08ae2",
+    "metadata": {}
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 2,
+  "fields": {
+    "practice": 5,
+    "amount": 35000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-10T21:06:18.954Z",
+    "reference_id": "4d059aa3-b32e-42f6-986e-f6640d6a53d6",
+    "metadata": {}
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 3,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-10T21:06:36.003Z",
+    "reference_id": "572c07f2-c20e-4560-8e50-acf64b7e6764",
+    "metadata": {}
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 4,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:42:35.884Z",
+    "reference_id": "c47797f6-1d59-43d1-ac0f-08228715fea5",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:42:35.880342+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 5,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:44:00.478Z",
+    "reference_id": "640e227f-7de4-41dd-91b4-b41fcc40cff4",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:44:00.466459+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 6,
+  "fields": {
+    "practice": 4,
+    "amount": 0,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:46:40.863Z",
+    "reference_id": "14018e0a-ccc9-4c7d-9882-8cc2b546dacd",
+    "metadata": {
+      "type": "Purchase",
+      "status": "fail",
+      "additional information": "Purchase attempt of Test on 2025-07-11 14:46:40.841391+00:00 using credit_card ending with 1234  failed."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 7,
+  "fields": {
+    "practice": 4,
+    "amount": 0,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:46:43.932Z",
+    "reference_id": "f2997724-7492-4b77-927d-de8684d85b08",
+    "metadata": {
+      "type": "Purchase",
+      "status": "fail",
+      "additional information": "Purchase attempt of Test on 2025-07-11 14:46:43.928243+00:00 using credit_card ending with 1234  failed."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 8,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:46:47.948Z",
+    "reference_id": "cba931c0-524e-4469-99a5-2b1b2b73218b",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:46:47.943338+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 9,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:47:13.329Z",
+    "reference_id": "b009e625-4b35-4ec8-b0fc-4be162425e26",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:47:13.326511+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 10,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:47:13.986Z",
+    "reference_id": "401680dd-f062-4244-8879-2b68de0ff4fe",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:47:13.984206+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 11,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:47:15.111Z",
+    "reference_id": "76622ebc-3695-4a6a-889e-994ce365e7d5",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:47:15.109559+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 12,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:50:06.146Z",
+    "reference_id": "81a9308f-ca79-459e-9129-15756445b11e",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:50:06.133387+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 13,
+  "fields": {
+    "practice": 4,
+    "amount": 75,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T14:56:37.079Z",
+    "reference_id": "b9536e47-ca02-4865-9918-9f97472166ab",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Test on 2025-07-11 14:56:37.072583+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 14,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T15:11:26.214Z",
+    "reference_id": "03083393-41c2-4864-9f44-9cbe62aca82b",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:11:26.198857+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 15,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T15:11:26.857Z",
+    "reference_id": "52b88416-cb6f-4e82-97b0-18605630e25f",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:11:26.852961+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 16,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T15:11:27.502Z",
+    "reference_id": "be526801-2d1a-4a50-88d1-ea66c48c141f",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:11:27.489450+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 17,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T15:11:28.217Z",
+    "reference_id": "87f7f8ae-0455-460f-b266-68429a2a0df9",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:11:28.206932+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 18,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T15:11:28.836Z",
+    "reference_id": "04a613bf-6ab5-44ec-9dd6-8fec21a88faa",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:11:28.834648+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 19,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": null,
+    "created_at": "2025-07-11T15:11:29.407Z",
+    "reference_id": "2b266ec5-27c9-476d-95ee-d8b8d0bcaa4b",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:11:29.405216+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 20,
+  "fields": {
+    "practice": 4,
+    "amount": 0,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:47.025Z",
+    "reference_id": "d3549c62-ce3f-4b60-8328-79d185b85f60",
+    "metadata": {
+      "type": "Purchase",
+      "status": "fail",
+      "additional information": "Purchase attempt of SMS Long Code - 50K on 2025-07-11 15:16:47.008118+00:00 using credit_card ending with 1234  failed."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 21,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:47.651Z",
+    "reference_id": "cdc96565-63ca-409f-ba0f-a454d59517d4",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:16:47.646891+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 22,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:48.281Z",
+    "reference_id": "c67f42e6-4379-4633-a95a-8bc94531110f",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:16:48.276086+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 23,
+  "fields": {
+    "practice": 4,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:50.396Z",
+    "reference_id": "b7f90196-ab77-412c-8e84-8775423503b2",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:16:50.389213+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 24,
+  "fields": {
+    "practice": 5,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:57.039Z",
+    "reference_id": "e3edf409-4e1d-413f-990c-378cbd0d93f1",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:16:57.033888+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 25,
+  "fields": {
+    "practice": 5,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:57.642Z",
+    "reference_id": "593cbf01-f45f-4b54-8792-293052054cde",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:16:57.636715+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 26,
+  "fields": {
+    "practice": 5,
+    "amount": 0,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:58.210Z",
+    "reference_id": "5cec5890-fd31-4898-9f94-bb75d1a574bb",
+    "metadata": {
+      "type": "Purchase",
+      "status": "fail",
+      "additional information": "Purchase attempt of SMS Long Code - 50K on 2025-07-11 15:16:58.207611+00:00 using credit_card ending with 1234  failed."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 27,
+  "fields": {
+    "practice": 5,
+    "amount": 50000,
+    "transaction_type": "PURCHASE",
+    "package": 1,
+    "created_at": "2025-07-11T15:16:58.665Z",
+    "reference_id": "1289314c-2b8a-49ef-90fd-f4e95d90d78e",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS Long Code - 50K on 2025-07-11 15:16:58.661659+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 28,
+  "fields": {
+    "practice": 5,
+    "amount": 150000,
+    "transaction_type": "PURCHASE",
+    "package": 9,
+    "created_at": "2025-07-12T03:56:36.166Z",
+    "reference_id": "bdf14795-93c8-492d-9385-2998c764bd50",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS - Pay As You Go on 2025-07-12 03:56:36.160930+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 29,
+  "fields": {
+    "practice": 5,
+    "amount": 1800000,
+    "transaction_type": "PURCHASE",
+    "package": 8,
+    "created_at": "2025-07-12T03:56:44.382Z",
+    "reference_id": "cec27732-3317-4738-a663-85be0098387a",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of Medium - VC on 2025-07-12 03:56:44.376391+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 30,
+  "fields": {
+    "practice": 5,
+    "amount": 0,
+    "transaction_type": "PURCHASE",
+    "package": 9,
+    "created_at": "2025-07-12T03:57:17.220Z",
+    "reference_id": "1b363f4a-c330-4624-89ac-909dc1f6aac1",
+    "metadata": {
+      "type": "Purchase",
+      "status": "fail",
+      "additional information": "Purchase attempt of SMS - Pay As You Go on 2025-07-12 03:57:17.215080+00:00 using credit_card ending with 1234  failed."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 31,
+  "fields": {
+    "practice": 5,
+    "amount": 150000,
+    "transaction_type": "PURCHASE",
+    "package": 9,
+    "created_at": "2025-07-12T03:57:21.020Z",
+    "reference_id": "691fe850-7d52-4e5f-826b-4bc1551743d3",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS - Pay As You Go on 2025-07-12 03:57:21.017259+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 34,
+  "fields": {
+    "practice": 4,
+    "amount": 0,
+    "transaction_type": "PURCHASE",
+    "package": 9,
+    "created_at": "2025-07-12T12:43:56.864Z",
+    "reference_id": "addab8de-c311-407f-b0d2-95e298935736",
+    "metadata": {
+      "type": "Purchase",
+      "status": "fail",
+      "additional information": "Purchase attempt of SMS - Pay As You Go on 2025-07-12 12:43:56.845064+00:00 using credit_card ending with 1234  failed."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 35,
+  "fields": {
+    "practice": 4,
+    "amount": 0,
+    "transaction_type": "PURCHASE",
+    "package": 9,
+    "created_at": "2025-07-12T12:43:58.793Z",
+    "reference_id": "aa89e93f-17ad-4210-8294-972e2404fbad",
+    "metadata": {
+      "type": "Purchase",
+      "status": "fail",
+      "additional information": "Purchase attempt of SMS - Pay As You Go on 2025-07-12 12:43:58.791175+00:00 using credit_card ending with 1234  failed."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 36,
+  "fields": {
+    "practice": 4,
+    "amount": 150000,
+    "transaction_type": "PURCHASE",
+    "package": 9,
+    "created_at": "2025-07-12T12:43:59.696Z",
+    "reference_id": "d76a3fe0-6894-4754-9ed3-1fe916ad4318",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS - Pay As You Go on 2025-07-12 12:43:59.692005+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+},
+{
+  "model": "credits.credittransaction",
+  "pk": 37,
+  "fields": {
+    "practice": 4,
+    "amount": 150000,
+    "transaction_type": "PURCHASE",
+    "package": 9,
+    "created_at": "2025-07-12T12:44:01.333Z",
+    "reference_id": "3dd5ac5f-cfb2-4ab8-9172-24b391cff0b7",
+    "metadata": {
+      "type": "Purchase",
+      "status": "success",
+      "additional information": "Purchase of SMS - Pay As You Go on 2025-07-12 12:44:01.329822+00:00 using credit_card ending with 1234 succeeded."
+    }
+  }
+}
+]
