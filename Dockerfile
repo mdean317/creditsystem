@@ -12,12 +12,12 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
-# Copy the rest of the code
-COPY . .
-
 # Set up entrypoint script
 RUN chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Copy the rest of the code
+COPY . .
 
 # Default command
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
