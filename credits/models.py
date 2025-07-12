@@ -104,7 +104,10 @@ class CreditTransaction(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     reference_id = models.UUIDField(default=uuid.uuid4)  # For tracking specific usage events
     metadata = models.JSONField(default=dict, blank=True)  # For storing additional info
-    
+    class Meta:
+        indexes = [
+            models.Index(fields=["practice", "transaction_type", "created_at"]),
+        ]
     def __str__(self):
         return f"{self.practice.name} - {self.transaction_type} - {self.amount}"
     
