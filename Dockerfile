@@ -1,11 +1,11 @@
-# Use a lightweight official Python image
+# Load Python image
 FROM python:3.10-slim
 
-# Prevents Python from writing .pyc files and ensures output appears immediately
+# standard practice - help with output and making docker image more efficient
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# Set the working directory inside the container
+# Set working directory inside the container
 WORKDIR /app
 
 # Install dependencies
@@ -15,5 +15,9 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Copy the rest of the code
 COPY . .
 
-# Run the startup script
-CMD ["sh", "./entrypoint.sh"]
+# Set up entrypoint script
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Default command
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
