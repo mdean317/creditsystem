@@ -22,7 +22,3 @@ else
 fi
 
 exec "$@"
-
-```bash
-chmod +x entrypoint.sh
-```
