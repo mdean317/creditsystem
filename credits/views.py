@@ -1,11 +1,9 @@
-from rest_framework import generics
-from datetime import datetime
 from django.db.models import F
 from django.http import JsonResponse
 from django.utils import timezone
-from .serializers import CreditPackageSerializer
-from .models import CreditPackage, Practice, CreditTransaction, PracticeCredit, TRANSACTION_TYPES, TYPE_PURCHASE
-from .exceptions import CreditCardError
+from .models import CreditPackage, Practice, CreditTransaction, PracticeCredit, TRANSACTION_TYPES, TYPE_PURCHASE, TYPE_SMS, TYPE_VOICE
+from .exceptions import CorruptedPackage, PracticeDoesNotExist, PracticeCreditDoesNotExist
+from .services import calc_SMS_pay_as_you_go_remaining, calc_VC_pay_as_you_go_remaining
 import json
 import random
 from urllib.parse import urlencode
@@ -13,102 +11,112 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from asgiref.sync import sync_to_async
 
-
-'''Use async def methods (e.g., async def get(self, request)) inside your API views. '''
-'''Use Django’s asynchronous ORM methods (aget, acreate, aupdate, adelete, etc.) instead of their synchronous counterparts.'''
-
 async def credit_package_List(request):
     """View for listing all packages"""
     
-    # This path only responds to POST requests
-    if request.method == "GET":
+    # This path only responds to GET requests
+    if request.method != "GET":
 
-        # Get the queryset of packages to display
-        queryset = CreditPackage.objects.all().order_by("id").aiterator()
+        return JsonResponse({"error": f"{request.method} method not allowed on this endpoint."}, status=405)
 
-        packages=[]
+    # Get the queryset of packages to display
+    queryset = CreditPackage.objects.all().order_by("id").aiterator()
 
-        async for package in queryset:
-            packages.append({
-                    "id": package.id,
-                    "name": package.name,
-                    "credit_amount": package.credit_amount,
-                    "price_cents": package.price_cents,
-                    "is_active": package.is_active,
-                    "description": package.updated_at,
+    packages=[]
 
-            })
+    async for package in queryset:
 
-        return JsonResponse({
-            "packages": packages,
+        packages.append({
+                "id": package.id,
+                "name": package.name,
+                "credit_amount": package.credit_amount,
+                "price_cents": package.price_cents,
+                "is_active": package.is_active,
+                "is_package_pay_as_you_go": package.is_package_pay_as_you_go,
+                "description": package.description,
+
         })
+
+    return JsonResponse({
+        "packages": packages,
+    })
 
 
 '''CSRF used just for testing!!'''
 @csrf_exempt 
 async def purchase_credits(request):
     """View for buying more credits(POST)"""
-
+    
     # This path only responds to POST requests
-    if request.method == "POST":
+    if request.method != "POST":
 
-        try:
+        return JsonResponse({"error": f"{request.method} method not allowed on this endpoint."}, status=405)
+    
+    try:
 
-            data = json.loads(request.body) # This is synchronous, but it is the best option I found. 
-            practice_id = data.get('practice_id')
-            package_id = data.get('package_id')
-            payment_method = data.get('payment_method')
-            payment_type = payment_method.get('type') if payment_method else None
-            last_four = payment_method.get('last_four') if payment_method else None
+        # get the parameters from the payload
+        data = json.loads(request.body) # This is synchronous, but it is the best option I found. 
+        practice_id = data.get('practice_id')
+        package_id = data.get('package_id')
+        payment_method = data.get('payment_method')
+        payment_type = payment_method.get('type') if payment_method else None
+        last_four = payment_method.get('last_four') if payment_method else None
 
-            package = await CreditPackage.objects.filter(id=package_id).afirst() 
+        package = await CreditPackage.objects.aget(id=package_id)
+
+        def perform_payment_and_prep_transaction_data(package, payment_type, last_four):
+            '''Mock Payment Processing'''
+            rand_int = random.randint(1, 5)
+
+            if rand_int == 5:
+                '''Payment failed'''
+
+                status = 'fail' 
+                # Craft information string
+                info = f"Purchase attempt of {package.name} on {timezone.now()} using {payment_type}"
+                if payment_type == "credit_card":
+                            info += f" ending with {last_four} "
+                info += " failed."
+                credits_to_add = 0
+                    
+            else:
+                '''Payment succeeded'''
+
+                status = 'success'
+                # Craft information string
+                info = f"Purchase of {package.name} on {timezone.now()} using {payment_type}"
+                if payment_type == "credit_card":
+                            info += f" ending with {last_four}"
+                info += " succeeded."
+                credits_to_add = package.credit_amount
+
+            return(status, credits_to_add, info)
+
+        # Get needed transaction data, based on success/fail. 
+        status, credits_to_add, info = perform_payment_and_prep_transaction_data(package, payment_type, last_four)
+        metadata = {"status": status, "type":TRANSACTION_TYPES[TYPE_PURCHASE], "additional information": info}
             
-            if package is None:
-                return JsonResponse({"error": "Invalid package ID"}, status=404)
+        @sync_to_async(thread_sensitive=True)
+        def atomic_log_transaction(practice_id, credits_to_add, package, metadata):
+            with transaction.atomic():
+                ''' log transaction and update practice credit in db  in an atomic way'''
 
-            def get_transaction_data(package, payment_type, last_four):
-                '''Mock Payment Processing'''
-                rand_int = random.randint(1, 5)
+                # get practice object for transaction lof
+                practice = Practice.objects.filter(id=practice_id).first()
 
-                if rand_int == 5:
-                    '''Payment failed'''
+                if not practice:
+                    raise PracticeDoesNotExist(practice_id)
+                
+                # update prectice credit with new credits (make sure it exists)
+                rows_updated = PracticeCredit.objects.filter(practice_id=practice_id).update(balance=F('balance') + credits_to_add)
 
-                    status = 'fail' 
-                    # Craft information string
-                    info = f"Purchase attempt of {package.name} on {timezone.now()} using {payment_type}"
-                    if payment_type == "credit_card":
-                                info += f" ending with {last_four} "
-                    info += " failed."
-                    credits_to_add = 0
-                    
-                else:
-                    '''Payment succeeded'''
+                if rows_updated == 0:
+                    raise PracticeCreditDoesNotExist(practice_id)
+                
+                new_balance = PracticeCredit.objects.filter(practice_id=practice_id).values_list("balance", flat=True).first()
 
-                    status = 'success'
-                    # Craft information string
-                    info = f"Purchase of {package.name} on {timezone.now()} using {payment_type}"
-                    if payment_type == "credit_card":
-                                info += f" ending with {last_four}"
-                    info += " succeeded."
-                    credits_to_add = package.credit_amount
-
-                return(status, credits_to_add, info)
-
-            # Get needed transaction data, basedon success fail. 
-            status, credits_to_add, info = get_transaction_data(package, payment_type, last_four)
-            metadata = {"status": status, "type":TRANSACTION_TYPES[TYPE_PURCHASE], "additional information": info}
-            
-            @sync_to_async(thread_sensitive=True)
-            def perform_async_atomic_transaction(practice_id, credits_to_add, package, metadata):
-                with transaction.atomic():
-                    
-                    practice = Practice.objects.filter(id=practice_id).first()
-        
-                    PracticeCredit.objects.filter(practice=practice).update(balance=F('balance') + credits_to_add)
-                    new_balance = PracticeCredit.objects.filter(practice=practice).values_list("balance", flat=True).first()
-                    
-                    # Create transaction record
-                    credit_transaction = CreditTransaction(
+                # Create transaction record
+                credit_transaction = CreditTransaction(
                         practice=practice,
                         amount=credits_to_add,
                         transaction_type=TYPE_PURCHASE,
@@ -116,24 +124,42 @@ async def purchase_credits(request):
                         metadata=metadata
                         )
 
-                    credit_transaction.save()  
-                    return(credit_transaction.id, new_balance, credit_transaction.reference_id)
+                credit_transaction.save()  
+                return(credit_transaction.id, new_balance, credit_transaction.reference_id)
 
-            transaction_id, new_balance, reference_id  = await perform_async_atomic_transaction(practice_id, credits_to_add, package, metadata)
+        transaction_id, new_balance, reference_id  = await atomic_log_transaction(practice_id, credits_to_add, package, metadata)
 
-            return JsonResponse({
-                    "transaction_id": transaction_id,
-                    "status": status ,
-                    "credits_added": credits_to_add,
-                    "new_balance": new_balance,
-                    "receipt_url": f"/api/credits/receipts/{reference_id}/"
-                    })
+        return JsonResponse({
+                "transaction_id": transaction_id,
+                "status": status ,
+                "credits_added": credits_to_add,
+                "new_balance": new_balance,
+                "receipt_url": f"/api/credits/receipts/{reference_id}/"
+                })
 
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON"}, status=400)
+    except json.JSONDecodeError:
+        return JsonResponse({"error": "Invalid JSON"}, status=400)
+    
+    except CreditPackage.DoesNotExist:
+        return JsonResponse({"error": "Package not found"}, status=404)
+    
+    except PracticeCreditDoesNotExist as e:
+        return JsonResponse({"error": str(e)}, status=404)
+    
+    except PracticeDoesNotExist as e:
+        return JsonResponse({"error": str(e)}, status=404)
 
 async def credit_balance(request):
     """View for checking a practice's credit balance"""
+
+    # This path only responds to GET requests
+    if request.method != "GET":
+        
+        return JsonResponse({"error": f"{request.method} method not allowed on this endpoint."}, status=405)
+    
+    # initiate variables
+    estimated_remaining_SMS = 0
+    estimated_remaining_VC = 0
 
     # Get practice id from url 
     str_practice_id = request.GET.get('practice_id')
@@ -149,26 +175,81 @@ async def credit_balance(request):
     
     try:
    
-        # Get credit info by practice id
-        practice_credit = await PracticeCredit.objects.aget(practice__id=practice_id)
-        
+        # Get practice credit info by practice id
+        practice_credit = await PracticeCredit.objects.select_related('current_package').aget(practice_id=practice_id)
+        is_pay_as_you_go = practice_credit.current_package.is_package_pay_as_you_go
+        last_purchase_date = await practice_credit.last_purchase_date()
+
         # Calculate estimated remaining communications
-        '''These should be seprate functions'''
-        avg_sms_cost = 2  # credits per SMS
-        avg_voice_cost = 5  # credits per voice call
+        if is_pay_as_you_go:
+            '''if practice is using a pay-at-you-go program'''
+            '''TODO: address the event where practice bought several pay-as-you-go credits, so calculation shouldn't necessarily start from last purchase '''
+            '''TODO: address the time limit on pay-as-you-go count (month for example) and count from the determined plan sstart date '''
         
+            # get all SMS usage since last purchase
+            sms_campaign_queryset = (CreditTransaction.objects
+                                    .filter(practice_id=practice_id, transaction_type=TYPE_SMS, created_at__gt=last_purchase_date)
+                                    .all()
+                                    )
+            
+            # evaluate queryset asynchly and convert to list
+            sms_campaigns = await sync_to_async(list)(sms_campaign_queryset)
+            
+            # estimated remaining SMS based on credit balance and package rate
+            estimated_remaining_SMS = calc_SMS_pay_as_you_go_remaining(practice_credit.balance, sms_campaigns)
+            
+            # get all VC usage since last purchase
+            voice_campaign_queryset = (CreditTransaction.objects
+                                    .filter(practice_id=practice_id, transaction_type=TYPE_VOICE, created_at__gt=last_purchase_date)
+                                    .all()
+                                    )
+            
+            # evaluate queryset asynchly and convert to list
+            voice_campaigns = await sync_to_async(list)(voice_campaign_queryset)
+
+            # estimated remaining VC based on credit balance and package rate
+            estimated_remaining_VC = calc_VC_pay_as_you_go_remaining(practice_credit.balance, voice_campaigns)
+            
+
+        else:
+
+            if practice_credit.current_package.credit_per_SMS:
+
+                # using the package's rate, calculate remaining SMS in package
+                avg_sms_cost = practice_credit.current_package.credit_per_SMS
+                estimated_remaining_SMS = practice_credit.balance // avg_sms_cost
+
+            if practice_credit.current_package.credit_per_VC:
+
+                # using the package's rate, calculate remaining VC in package
+                avg_voice_cost = practice_credit.current_package.credit_per_VC
+                estimated_remaining_VC = practice_credit.balance // avg_voice_cost
+
+            if not practice_credit.current_package.credit_per_SMS and not practice_credit.current_package.credit_per_VC:
+
+                raise CorruptedPackage(practice_credit.current_package.id, practice_credit.current_package.name)
+            
         return JsonResponse({
             "practice_id": practice_id,
             "current_balance": practice_credit.balance,
-            "last_purchase": await practice_credit.last_purchase_date(),
-            "estimated_remaining_sms": practice_credit.balance // avg_sms_cost,
-            "estimated_remaining_voice": practice_credit.balance // avg_voice_cost
+            "last_purchase": last_purchase_date,
+            "estimated_remaining_sms": estimated_remaining_SMS,
+            "estimated_remaining_voice": estimated_remaining_VC
         })
     
     except PracticeCredit.DoesNotExist:
         return JsonResponse({"error": "Practice not found"}, status=404)
+    
+    except CorruptedPackage as e:
+        JsonResponse({"error": str(e)}, status=409)
 
 async def transaction_history(request):
+
+    # This path only responds to GET requests
+    if request.method != "GET":
+        
+        return JsonResponse({"error": f"{request.method} method not allowed on this endpoint."}, status=405)
+    
     practice_id = request.GET.get("practice_id")
 
     # If couldn't get paramter, respond with this error
@@ -196,6 +277,9 @@ async def transaction_history(request):
         .order_by("-created_at")
     )
 
+    if not await queryset.aexists():
+        return JsonResponse({"response": f"Practice requested id: {practice_id} hasn't performed any transactions yet"}, status=404)
+    
     total = await queryset.acount()
 
     # Select values to show taking pagination into account
@@ -238,3 +322,6 @@ async def transaction_history(request):
         "transactions": results,
         "pagination": pagination,
     })
+    
+
+

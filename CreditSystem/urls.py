@@ -24,6 +24,6 @@ urlpatterns = [
     path('api/credits/purchase/', views.purchase_credits, name='purchase_credits'), 
     path('api/credits/balance/', views.credit_balance, name='practice_balance'), 
     path('api/credits/transactions/', views.transaction_history, name='practice_transactions_list'), 
-    #path('api/credits/transactions/useSMS', views..as_view(), name=''), 
-    #path('api/credits/transactions/useVoice', views..as_view(), name=''), 
+    #path('api/credits/transactions/buySMS', views..as_view(), name=''), 
+    #path('api/credits/transactions/buyVC', views..as_view(), name=''), 
 ]
